@@ -1,65 +1,125 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-struct node {
+// Define the structure for a circular linked list node
+struct Node {
     int data;
-    struct node* next;
+    struct Node* next;
 };
 
-struct node* createNode(int data) {
-    struct node* newNode = (struct node*)malloc(sizeof(struct node));
-    if (newNode == NULL) {
-        printf("Memory allocation error");
-    }
+// Define the structure for a circular linked list
+struct CircularLinkedList {
+    struct Node* head;
+};
+
+// Function to create a new node
+struct Node* createNode(int data) {
+    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
     newNode->data = data;
-    newNode->next = newNode; 
+    newNode->next = NULL;
     return newNode;
 }
 
-struct node* insert(struct node* head, int data) {
-    if (head == NULL) {
-        return createNode(data);
-    }
-
-    struct node* newNode = createNode(data);
-    newNode->next = head->next;
-    head->next = newNode;
-    return head;
+// Function to initialize a circular linked list
+void initCircularLinkedList(struct CircularLinkedList* list) {
+    list->head = NULL;
 }
 
-void display(struct node* head) {
-    if (head == NULL) {
+// Function to insert a node at the end of the circular list
+void insertAtEnd(struct CircularLinkedList* list, int data) {
+    struct Node* newNode = createNode(data);
+    
+    if (list->head == NULL) {
+        list->head = newNode;
+        newNode->next = list->head; // Point to itself to make it circular
+    } else {
+        struct Node* current = list->head;
+        while (current->next != list->head) {
+            current = current->next;
+        }
+        current->next = newNode;
+        newNode->next = list->head; // Make it circular
+    }
+}
+
+// Function to display the circular linked list
+void display(const struct CircularLinkedList* list) {
+    if (list->head == NULL) {
         printf("Circular Linked List is empty.\n");
         return;
     }
 
-    struct node* current = head;
+    struct Node* current = list->head;
+    
     do {
-        printf("%d ", current->data);
+        printf("%d -> ", current->data);
         current = current->next;
-    } while (current != head);
+    } while (current != list->head);
 
-    printf("\n");
+    printf("(head)\n");
 }
 
-int main() {
-    struct node* head = NULL;
+// Function to delete a node with a specific value from the circular list
+void deleteNode(struct CircularLinkedList* list, int target) {
+    if (list->head == NULL) {
+        printf("Circular Linked List is empty.\n");
+        return;
+    }
 
-    head = insert(head, 3);
-    head = insert(head, 2);
-    head = insert(head, 1);
-
-    display(head);
-
-   
-    struct node* current = head;
-    struct node* nextNode;
+    struct Node* current = list->head;
+    struct Node* prev = NULL;
 
     do {
-        nextNode = current->next;
-        free(current);
-        current = nextNode;
-    } while (current != head);
+        if (current->data == target) {
+            if (prev == NULL) {
+                // Deleting the head node
+                struct Node* last = list->head;
+                while (last->next != list->head) {
+                    last = last->next;
+                }
+
+                if (current == list->head) {
+                    // Only one node in the circular list
+                    free(current);
+                    list->head = NULL;
+                } else {
+                    last->next = current->next;
+                    list->head = current->next;
+                    free(current);
+                }
+
+                return; // Node deleted
+            } else {
+                prev->next = current->next;
+                free(current);
+                return; // Node deleted
+            }
+        }
+        prev = current;
+        current = current->next;
+    } while (current != list->head);
+
+    printf("Node with value %d not found in the Circular Linked List.\n", target);
+}
+
+// Main function for testing circular linked list
+int main() {
+    struct CircularLinkedList circularList;
+    initCircularLinkedList(&circularList);
+
+    // Insert at the end
+    insertAtEnd(&circularList, 1);
+    insertAtEnd(&circularList, 3);
+    display(&circularList);
+
+    // Delete a node
+    deleteNode(&circularList, 1);
+    display(&circularList);
+
+    // Insert at the end
+    insertAtEnd(&circularList, 5);
+    insertAtEnd(&circularList, 7);
+    display(&circularList);
 
     return 0;
 }

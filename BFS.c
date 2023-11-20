@@ -41,7 +41,7 @@ void addEdge(struct Graph* graph, int src, int dest) {
 struct Queue* createQueue(unsigned capacity) {
     struct Queue* queue = (struct Queue*)malloc(sizeof(struct Queue));
     queue->capacity = capacity;
-    queue->front = queue->size = 0;
+    queue->front = queue->size = -1;
     queue->rear = capacity - 1;
     queue->array = (int*)malloc(capacity * sizeof(int));
     return queue;

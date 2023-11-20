@@ -104,7 +104,6 @@ int childCount(Graph* graph, int node) {
 }
 
 void dijkstra(Graph* graph, int src) {
-    bool* visited = (bool*)calloc(graph->V, sizeof(bool));
     int* shortestDistance = (int*)calloc(graph->V, sizeof(int));
     struct Edge* temp;
     for (int i = 0; i < graph->V; i++) {
@@ -113,7 +112,6 @@ void dijkstra(Graph* graph, int src) {
 
     PriorityQueue* queue = createPriorityQueue();
     enqueue(queue, src, 0);
-    visited[src] = true;
     shortestDistance[src] = 0;
 
     while (!isEmpty(queue)) {
@@ -122,12 +120,13 @@ void dijkstra(Graph* graph, int src) {
         for (int i = 0; i < childCount(graph, u); i++) {
             int v = temp->data;
             int weight = temp->weight;
-            if (!visited[v] && (shortestDistance[u] + weight < shortestDistance[v])) {
+            if ((shortestDistance[u] + weight < shortestDistance[v])) {
                 shortestDistance[v] = shortestDistance[u] + weight;
                 enqueue(queue, v, shortestDistance[v]);
             }
             temp = temp->next;
         }
+
     }
 
 
@@ -136,7 +135,6 @@ void dijkstra(Graph* graph, int src) {
         printf("To node %d: %d\n", i, shortestDistance[i]);
     }
 
-    free(visited);
     free(shortestDistance);
 }
 

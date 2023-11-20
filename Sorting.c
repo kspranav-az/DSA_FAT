@@ -20,7 +20,6 @@ void insertion_sort(int arr[],int n){
     for(i = 1; i < n ; i++){
         key = arr[i];
         j = i -1;
-
         while(j>=0 && arr[j] > key){
             arr[j+1]=arr[j];
             j--;
@@ -127,11 +126,11 @@ void quick_sort(int arr[], int low, int high) {
 int main(){
     int arr[] = {64,34,25,12,22,11,90};
     int n = sizeof(arr)/sizeof(arr[0]);
-    //bubble_sort(arr,n);
+    // bubble_sort(arr,n);
     //insertion_sort(arr,n);
-    //selection_sort(arr,n);
+    // selection_sort(arr,n);
     //merge_sort(arr,0,n-1);
-    quick_sort(arr,0,n-1);
+    // quick_sort(arr,0,n-1);
     printf("Sorted array:");
     for(int i = 0 ; i < n ; i++ ){
         printf("%d ",arr[i]);
